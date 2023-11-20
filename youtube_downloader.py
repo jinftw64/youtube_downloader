@@ -10,12 +10,15 @@ link = input('Enter URL of YouTube video: ')
 
 try:
     yt = YouTube(link)
-    yt = yt.streams.get_highest_resolution()
 except:
     print('Connection error')
 
+mp4files = yt.filter('mp4')
+
+hd-video = yt.get(mp4files[-1].extension, mp4files[-1].resolution)
+
 try:
-    yt.download(save_path)
+    hd-video.download(save_path)
 except:
     print('Connection error')
 
