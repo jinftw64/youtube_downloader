@@ -14,7 +14,11 @@ yt = YouTube(link)
 
 video_streams = yt.streams.filter(adaptive=True, file_extension='webm', type='video')
 video_streams = video_streams.first()
+
 video_name = video_streams.default_filename
+video_name = video_name.split('.')[0]
+print(video_name)
+
 video_streams.download(output_path=save_path, filename='video.webm')
 
 audio_streams = yt.streams.filter(adaptive=True, file_extension='webm', type='audio')
@@ -23,17 +27,15 @@ audio_streams.download(output_path=save_path, filename='audio.webm')
 
 print('Download complete.')
 
-unvalidated_command = f"ffmpeg -i {save_path}video.webm -i {save_path}audio.webm -c copy {save_path}{video_name}.mp4"
-
-escaped_command = shlex.quote(unvalidated_command)
+command = ['ffmpeg', '-i', '{}video.webm'.format(save_path), '-i', '{}audio.webm'.format(save_path), '-c', 'copy', '{}'.format(save_path) + '{}.mp4'.format(shlex.quote(video_name)) ]
 
 try:
     print('Merging video and audio files...')
-    subprocess.run(escaped_command)
+    subprocess.run(command)
 except:
     pass
 
-os.remove(f"{save_path}video.webm")
-os.remove(f"{save_path}audio.webm")
+# os.remove(f"{save_path}video.webm")
+# os.remove(f"{save_path}audio.webm")
 
 print('Download completed')
